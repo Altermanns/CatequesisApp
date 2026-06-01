@@ -2,9 +2,8 @@ import os
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['*']  # Configurar para producción real
+ALLOWED_HOSTS = ['*']
 
-# Database configuration - SQLite (persistent in Render Disk)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
