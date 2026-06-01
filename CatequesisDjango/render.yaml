@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: catequesis-django
+    env: docker
+    plan: free # O el plan que prefieras
+    region: ohio # O la más cercana a tu Keycloak
+    dockerfilePath: Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: CatequesisDjango.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MONGO_URI
+        sync: false # Deberás ponerla manualmente en el panel de Render o usar una DB de Render
+      - key: KEYCLOAK_URL
+        sync: false # La URL de tu Keycloak en Render
+      - key: KC_REALM
+        value: catequesis-realm
+      - key: KC_CLIENT_ID
+        value: catequesis-app
+      - key: KC_CLIENT_SECRET
+        sync: false
+    disk:
+      name: catequesis-data
+      mountPath: /app/db_data
+      sizeGB: 1
