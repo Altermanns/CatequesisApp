@@ -21,10 +21,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar el proyecto
 COPY . /app/
 
-# Crear carpeta para archivos estáticos
-RUN mkdir -p staticfiles
+# Crear carpetas necesarias y asegurar permisos
+RUN mkdir -p staticfiles db_data && chmod -R 777 db_data
 
-# Dar permisos al script de entrada (lo crearemos a continuación)
+# Dar permisos al script de entrada
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

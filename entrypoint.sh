@@ -6,6 +6,10 @@ set -e
 # Asegurar que Django use los settings de producción en Render
 export DJANGO_SETTINGS_MODULE=CatequesisDjango.settings.production
 
+# Asegurar que la carpeta de la base de datos exista y tenga permisos
+mkdir -p /app/db_data
+chmod 777 /app/db_data
+
 echo "Ejecutando migraciones de Django (SQLite para sesiones/auth)..."
 python manage.py migrate --noinput
 
