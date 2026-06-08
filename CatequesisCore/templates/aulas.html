@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block titulo %}Aulas{% endblock %}
 {% block contenido %}
-<link rel="stylesheet" href="/static/estilos.css">
 <h2 class="mb-4">Aulas Disponibles</h2>
 <ul class="list-group">
     {% for aula in aulas %}

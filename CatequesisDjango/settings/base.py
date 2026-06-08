@@ -34,6 +34,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'CatequesisCore.middleware.SilentSSOMiddleware',  # Nuevo Middleware SSO
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -84,3 +85,7 @@ STATICFILES_DIRS = [
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuración de Autenticación
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'

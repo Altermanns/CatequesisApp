@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from ..services.catequista_service import CatequistaService
+from ..decorators import catequista_required, admin_required
 
 service = CatequistaService()
 
+@catequista_required
 def listar_catequistas(request):
     lista = service.obtener_todos()
     return render(request, 'catequistas.html', {'catequistas': lista})
 
+@admin_required
 def agregar_catequista(request):
     if request.method == 'POST':
         data = {
@@ -23,6 +26,7 @@ def agregar_catequista(request):
         return redirect('listar_catequistas')
     return redirect('listar_catequistas')
 
+@admin_required
 def editar_catequista(request, id):
     if request.method == 'POST':
         data = {
@@ -38,10 +42,12 @@ def editar_catequista(request, id):
     catequista = service.obtener_por_id(id)
     return render(request, 'editar_catequista.html', {'catequista': catequista})
 
+@admin_required
 def eliminar_catequista(request, id):
     service.eliminar_catequista(id)
     return redirect('listar_catequistas')
 
+@catequista_required
 def buscar_catequista(request):
     termino = request.GET.get('termino', '')
     resultados = service.buscar_por_nombre(termino)

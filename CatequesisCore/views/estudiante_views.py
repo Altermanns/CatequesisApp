@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
 from ..services.estudiante_service import EstudianteService
+from ..decorators import catequista_required, admin_required
 
 service = EstudianteService()
 
+@catequista_required
 def listar_estudiantes(request):
     lista = service.obtener_todos()
     sacramentos = service.obtener_sacramentos()
     return render(request, 'estudiantes.html', {'estudiantes': lista, 'sacramentos': sacramentos})
 
+@catequista_required
 def agregar_estudiante(request):
     if request.method == 'POST':
         sacramentos_faltantes = request.POST.getlist('sacramentos')
@@ -29,6 +32,7 @@ def agregar_estudiante(request):
         return redirect('listar_estudiantes')
     return redirect('listar_estudiantes')
 
+@catequista_required
 def editar_estudiante(request, id):
     if request.method == 'POST':
         data = {
@@ -50,10 +54,12 @@ def editar_estudiante(request, id):
     sacramentos = service.obtener_sacramentos()
     return render(request, 'editar_estudiante.html', {'estudiante': estudiante, 'sacramentos': sacramentos})
 
+@admin_required
 def eliminar_estudiante(request, id):
     service.eliminar_estudiante(id)
     return redirect('listar_estudiantes')
 
+@catequista_required
 def buscar_estudiante(request):
     termino = request.GET.get('termino', '')
     resultados = service.buscar_por_nombre(termino)

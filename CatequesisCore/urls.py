@@ -20,4 +20,7 @@ urlpatterns = [
     path('estudiantes/editar/<str:id>/', views.editar_estudiante, name='editar_estudiante'),
     path('estudiantes/eliminar/<str:id>/', views.eliminar_estudiante, name='eliminar_estudiante'),
     path('estudiantes/buscar/', views.buscar_estudiante, name='buscar_estudiante'),
+    
+    # Grupos
+    path('grupos/', views.listar_grupos, name='listar_grupos'),
 ]

@@ -5,6 +5,7 @@
 <h2>Editar Estudiante</h2>
 
 <form method="POST" class="row g-3">
+    {% csrf_token %}
     <div class="col-md-4">
         <label class="form-label">Nombre</label>
         <input type="text" name="nombre" class="form-control" value="{{ estudiante.nombre }}" required>
@@ -27,9 +28,9 @@
         <label><strong>Sacramentos que le hacen falta:</strong></label><br>
         {% for s in sacramentos %}
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" name="sacramentos" value="{{ s._id }}"
-                    {% if s._id in estudiante.sacramentos %}checked{% endif %}>
-                <label class="form-check-label" for="{{ s._id }}">{{ s.nombre }}</label>
+                <input class="form-check-input" type="checkbox" name="sacramentos" value="{{ s.id }}"
+                    {% if s.id in estudiante.sacramentos %}checked{% endif %}>
+                <label class="form-check-label" for="{{ s.id }}">{{ s.nombre }}</label>
             </div>
         {% endfor %}
     </div>
@@ -40,22 +41,22 @@
     <div class="col-md-4">
         <label class="form-label">Nombre del Representante</label>
         <input type="text" name="nombrePadre" class="form-control"
-               value="{{ estudiante.padres[0].nombre if estudiante.padres }}">
+               value="{% if estudiante.padres %}{{ estudiante.padres.0.nombre }}{% endif %}">
     </div>
     <div class="col-md-4">
         <label class="form-label">Teléfono</label>
         <input type="text" name="telefonoPadre" class="form-control"
-               value="{{ estudiante.padres[0].telefono if estudiante.padres }}">
+               value="{% if estudiante.padres %}{{ estudiante.padres.0.telefono }}{% endif %}">
     </div>
     <div class="col-md-4">
         <label class="form-label">Correo electrónico</label>
         <input type="email" name="emailPadre" class="form-control"
-               value="{{ estudiante.padres[0].email if estudiante.padres }}">
+               value="{% if estudiante.padres %}{{ estudiante.padres.0.email }}{% endif %}">
     </div>
 
     <div class="col-12 mt-4">
         <button type="submit" class="btn btn-primary rounded-pill">Guardar Cambios</button>
-        <a href="/estudiantes" class="btn btn-secondary rounded-pill">Cancelar</a>
+        <a href="{% url 'listar_estudiantes' %}" class="btn btn-secondary rounded-pill">Cancelar</a>
     </div>
 </form>
 

@@ -19,7 +19,7 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'listar_catequistas' %}">Catequistas</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'listar_estudiantes' %}">Estudiantes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Grupos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'listar_grupos' %}">Grupos</a></li>
                 {% endif %}
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
