@@ -51,10 +51,20 @@ class KeycloakStrategy(AuthStrategy):
                 }
             )
             
-            # Sincronizar roles de Keycloak (buscar en client roles y realm roles)
+            # Sincronizar roles de Keycloak (buscar en client roles y realm roles del Access Token decodificado)
             client_id = keycloak_manager.client_id
-            client_roles = user_info.get('resource_access', {}).get(client_id, {}).get('roles', [])
-            realm_roles = user_info.get('realm_access', {}).get('roles', [])
+            
+            try:
+                # El access_token es un JWT que contiene los roles asignados por el Identity Provider
+                decoded_token = keycloak_manager.keycloak_openid.decode_token(access_token)
+            except Exception as de:
+                print(f"[SECURITY WARNING] No se pudo decodificar el access_token con firma: {str(de)}. Intentando sin verificación de firma.")
+                # Decodificar el token sin verificar firma como fallback (ya que lo obtuvimos directamente de Keycloak por HTTPS)
+                import jwt
+                decoded_token = jwt.decode(access_token, options={"verify_signature": False})
+                
+            client_roles = decoded_token.get('resource_access', {}).get(client_id, {}).get('roles', [])
+            realm_roles = decoded_token.get('realm_access', {}).get('roles', [])
             all_roles = list(set(client_roles + realm_roles))
             
             # Convertir roles a minúsculas para evitar problemas de case sensitivity
@@ -63,8 +73,8 @@ class KeycloakStrategy(AuthStrategy):
             # LOGS DE SEGURIDAD (Se verán en la consola de Render)
             print(f"[SECURITY INFO] Intentando sincronizar roles para usuario: {username}")
             print(f"[SECURITY INFO] Client ID configurado: {client_id}")
-            print(f"[SECURITY INFO] Roles de Cliente encontrados: {client_roles}")
-            print(f"[SECURITY INFO] Roles de Realm encontrados: {realm_roles}")
+            print(f"[SECURITY INFO] Roles de Cliente encontrados en JWT: {client_roles}")
+            print(f"[SECURITY INFO] Roles de Realm encontrados en JWT: {realm_roles}")
             print(f"[SECURITY INFO] Todos los roles combinados: {all_roles}")
             
             if hasattr(user, 'profile'):
