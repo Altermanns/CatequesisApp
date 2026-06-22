@@ -51,15 +51,17 @@ class KeycloakStrategy(AuthStrategy):
                 }
             )
             
-            # Sincronizar roles de Keycloak
+            # Sincronizar roles de Keycloak (buscar en client roles y realm roles)
             client_id = keycloak_manager.client_id
-            roles = user_info.get('resource_access', {}).get(client_id, {}).get('roles', [])
+            client_roles = user_info.get('resource_access', {}).get(client_id, {}).get('roles', [])
+            realm_roles = user_info.get('realm_access', {}).get('roles', [])
+            all_roles = list(set(client_roles + realm_roles))
             
             if hasattr(user, 'profile'):
                 profile = user.profile
-                if 'admin' in roles:
+                if 'admin' in all_roles:
                     profile.role = 'admin'
-                elif 'catequista' in roles:
+                elif 'catequista' in all_roles:
                     profile.role = 'catequista'
                 else:
                     profile.role = 'visitante'

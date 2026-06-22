@@ -49,7 +49,9 @@ class KeycloakManager:
         return self.keycloak_openid.userinfo(token)
 
     def get_logout_url(self, redirect_uri):
-        return f"{self.server_url}/realms/{self.realm_name}/protocol/openid-connect/logout?post_logout_redirect_uri={redirect_uri}&client_id={self.client_id}"
+        clean_url = self.server_url.rstrip('/')
+        return f"{clean_url}/realms/{self.realm_name}/protocol/openid-connect/logout?post_logout_redirect_uri={redirect_uri}&client_id={self.client_id}"
+
 
 class KMSManager:
     def __init__(self):
@@ -78,10 +80,14 @@ class KMSManager:
             ciphertext_blob = response['CiphertextBlob']
             return base64.b64encode(ciphertext_blob).decode('utf-8')
         except ClientError as e:
-            print(f"[AWS KMS ERROR] Error al cifrar: {e.response['Error']['Message']}")
+            err = f"ClientError: {e.response['Error']['Message']}"
+            print(f"[AWS KMS ERROR] Error al cifrar: {err}")
+            self.last_error = err
             return None
         except Exception as e:
-            print(f"[AWS KMS ERROR] Error inesperado al cifrar: {e}")
+            err = f"Exception: {str(e)}"
+            print(f"[AWS KMS ERROR] Error inesperado al cifrar: {err}")
+            self.last_error = err
             return None
 
     def decrypt(self, ciphertext_base64, key_name=None):
@@ -92,10 +98,14 @@ class KMSManager:
             )
             return response['Plaintext'].decode('utf-8')
         except ClientError as e:
-            print(f"[AWS KMS ERROR] Error al descifrar: {e.response['Error']['Message']}")
+            err = f"ClientError: {e.response['Error']['Message']}"
+            print(f"[AWS KMS ERROR] Error al descifrar: {err}")
+            self.last_error = err
             return None
         except Exception as e:
-            print(f"[AWS KMS ERROR] Error inesperado al descifrar: {e}")
+            err = f"Exception: {str(e)}"
+            print(f"[AWS KMS ERROR] Error inesperado al descifrar: {err}")
+            self.last_error = err
             return None
 
 kms_manager = KMSManager()
