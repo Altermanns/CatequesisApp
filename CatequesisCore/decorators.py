@@ -47,10 +47,23 @@ def require_client_credentials(view_func):
         
         token = auth_header.split(' ')[1]
         try:
-            # Validamos el token consultando al introspect endpoint de Keycloak
-            introspection = keycloak_manager.keycloak_openid.introspect(token)
-            if not introspection.get('active'):
-                return JsonResponse({"error": "Unauthorized: Token is inactive or expired"}, status=401)
+            # 1. Obtener la llave pública de Keycloak y formatearla en PEM
+            raw_key = keycloak_manager.keycloak_openid.public_key()
+            public_key = f"-----BEGIN PUBLIC KEY-----\n{raw_key}\n-----END PUBLIC KEY-----"
+            
+            # 2. Decodificar y verificar la firma/expiración usando python-keycloak (jwcrypto)
+            decoded = keycloak_manager.keycloak_openid.decode_token(
+                token,
+                key=public_key,
+                options={"verify_aud": False}
+            )
+            
+            # 3. Validar que el token sea de un cliente autorizado (TextilApp o Catequesis)
+            client_id = decoded.get('azp', '')
+            allowed_clients = ['textil-app-a', 'textil_app_A', 'Catequesis_app_B']
+            if client_id not in allowed_clients and not client_id.startswith('textil'):
+                return JsonResponse({"error": f"Forbidden: Client '{client_id}' is not authorized"}, status=403)
+                
         except Exception as e:
             return JsonResponse({"error": f"Unauthorized: Token validation failed: {str(e)}"}, status=401)
         
