@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # ⛪ Catequesis_SS
+=======
+#  Catequesis_SS
+>>>>>>> 0dde29c3d267727f7786360be34e5d6e3d8a6ba3
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue.svg?style=for-the-badge&logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-5.2.7-092E20.svg?style=for-the-badge&logo=django&logoColor=white)
@@ -9,7 +13,11 @@ Plataforma integral diseñada para la automatización, control y gestión de est
 
 ---
 
+<<<<<<< HEAD
 ## 📐 Arquitectura de Persistencia Híbrida
+=======
+##  Arquitectura de Persistencia Híbrida
+>>>>>>> 0dde29c3d267727f7786360be34e5d6e3d8a6ba3
 
 El sistema desacopla los datos de autenticación del usuario de las entidades operacionales del negocio:
 
@@ -25,7 +33,11 @@ graph TD
 
 ---
 
+<<<<<<< HEAD
 ## ✨ Características Principales
+=======
+##  Características Principales
+>>>>>>> 0dde29c3d267727f7786360be34e5d6e3d8a6ba3
 *   **Estructura de Base de Datos Híbrida:** 
     *   **SQL (SQLite/PostgreSQL):** Utilizada exclusivamente para el sistema de autenticación nativo de Django, sesiones y el modelo `Profile`.
     *   **NoSQL (MongoDB):** Utilizada para almacenar colecciones con estructuras dinámicas y complejas como Estudiantes (con padres y sacramentos embebidos), Catequistas y Grupos.
@@ -34,14 +46,22 @@ graph TD
 
 ---
 
+<<<<<<< HEAD
 ## 🛠️ Requisitos Previos
+=======
+##  Requisitos Previos
+>>>>>>> 0dde29c3d267727f7786360be34e5d6e3d8a6ba3
 *   Python 3.11 o superior.
 *   Una instancia de MongoDB (local o Atlas en la nube).
 *   Instancia activa de Keycloak.
 
 ---
 
+<<<<<<< HEAD
 ## ⚙️ Configuración del Entorno Local
+=======
+##  Configuración del Entorno Local
+>>>>>>> 0dde29c3d267727f7786360be34e5d6e3d8a6ba3
 
 1.  **Clonar el proyecto y acceder a la carpeta:**
     ```bash
@@ -80,7 +100,11 @@ graph TD
 
 ---
 
+<<<<<<< HEAD
 ## 🔐 Configuración de Clientes en Keycloak
+=======
+##  Configuración de Clientes en Keycloak
+>>>>>>> 0dde29c3d267727f7786360be34e5d6e3d8a6ba3
 Para habilitar el flujo de Single Sign-On entre este proyecto y Textil-APP:
 1.  Asegura que ambos clientes pertenezcan al mismo Realm o compartan la cookie de sesión del navegador.
 2.  Registrar el cliente `catequesis-app` como **Confidential**.
