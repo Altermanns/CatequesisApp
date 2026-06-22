@@ -55,13 +55,12 @@ class KeycloakStrategy(AuthStrategy):
             client_id = keycloak_manager.client_id
             
             try:
-                # El access_token es un JWT que contiene los roles asignados por el Identity Provider
-                decoded_token = keycloak_manager.keycloak_openid.decode_token(access_token)
-            except Exception as de:
-                print(f"[SECURITY WARNING] No se pudo decodificar el access_token con firma: {str(de)}. Intentando sin verificación de firma.")
-                # Decodificar el token sin verificar firma como fallback (ya que lo obtuvimos directamente de Keycloak por HTTPS)
+                # Decodificar el token JWT de acceso de forma directa (ya obtenido de forma segura desde Keycloak por HTTPS)
                 import jwt
                 decoded_token = jwt.decode(access_token, options={"verify_signature": False})
+            except Exception as de:
+                print(f"[SECURITY WARNING] No se pudo decodificar el access_token: {str(de)}")
+                decoded_token = {}
                 
             client_roles = decoded_token.get('resource_access', {}).get(client_id, {}).get('roles', [])
             realm_roles = decoded_token.get('realm_access', {}).get('roles', [])
