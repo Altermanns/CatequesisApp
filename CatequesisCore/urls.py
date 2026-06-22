@@ -23,4 +23,7 @@ urlpatterns = [
     
     # Grupos
     path('grupos/', views.listar_grupos, name='listar_grupos'),
+    
+    # API Integration (KMS Secure Communication)
+    path('api/v1/sync-textil/', views.receive_textil_data, name='receive_textil_data'),
 ]

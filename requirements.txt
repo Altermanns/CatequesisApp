@@ -7,3 +7,5 @@ pymongo
 dnspython
 django-allauth==0.61.1
 httpx==0.27.2
+boto3==1.34.0
+

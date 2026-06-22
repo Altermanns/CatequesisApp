@@ -31,3 +31,28 @@ def admin_required(view_func):
 def catequista_required(view_func):
     """Decorator to require catequista role (or admin)."""
     return role_required('catequista')(view_func)
+
+def require_client_credentials(view_func):
+    """
+    Decorator to validate Keycloak client credentials token (JWT) from the Authorization header.
+    """
+    from django.http import JsonResponse
+    from .security import keycloak_manager
+
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return JsonResponse({"error": "Unauthorized: Missing or malformed Authorization header"}, status=401)
+        
+        token = auth_header.split(' ')[1]
+        try:
+            # Validamos el token consultando al introspect endpoint de Keycloak
+            introspection = keycloak_manager.keycloak_openid.introspect(token)
+            if not introspection.get('active'):
+                return JsonResponse({"error": "Unauthorized: Token is inactive or expired"}, status=401)
+        except Exception as e:
+            return JsonResponse({"error": f"Unauthorized: Token validation failed: {str(e)}"}, status=401)
+        
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view

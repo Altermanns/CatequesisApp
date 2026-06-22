@@ -1,4 +1,7 @@
 import os
+import base64
+import boto3
+from botocore.exceptions import ClientError
 from keycloak import KeycloakOpenID
 
 class KeycloakManager:
@@ -48,4 +51,52 @@ class KeycloakManager:
     def get_logout_url(self, redirect_uri):
         return f"{self.server_url}/realms/{self.realm_name}/protocol/openid-connect/logout?post_logout_redirect_uri={redirect_uri}&client_id={self.client_id}"
 
+class KMSManager:
+    def __init__(self):
+        self.aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+        self.aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+        self.region_name = os.environ.get('AWS_REGION_NAME', 'us-east-1')
+        self.key_arn = os.environ.get('AWS_KMS_KEY_ARN')
+
+        if self.aws_access_key and self.aws_secret_key:
+            self.client = boto3.client(
+                'kms',
+                aws_access_key_id=self.aws_access_key,
+                aws_secret_access_key=self.aws_secret_key,
+                region_name=self.region_name
+            )
+        else:
+            # Fallback local o IAM Role de EC2
+            self.client = boto3.client('kms', region_name=self.region_name)
+
+    def encrypt(self, plaintext, key_name=None):
+        try:
+            response = self.client.encrypt(
+                KeyId=self.key_arn,
+                Plaintext=plaintext.encode('utf-8')
+            )
+            ciphertext_blob = response['CiphertextBlob']
+            return base64.b64encode(ciphertext_blob).decode('utf-8')
+        except ClientError as e:
+            print(f"[AWS KMS ERROR] Error al cifrar: {e.response['Error']['Message']}")
+            return None
+        except Exception as e:
+            print(f"[AWS KMS ERROR] Error inesperado al cifrar: {e}")
+            return None
+
+    def decrypt(self, ciphertext_base64, key_name=None):
+        try:
+            ciphertext_blob = base64.b64decode(ciphertext_base64.encode('utf-8'))
+            response = self.client.decrypt(
+                CiphertextBlob=ciphertext_blob
+            )
+            return response['Plaintext'].decode('utf-8')
+        except ClientError as e:
+            print(f"[AWS KMS ERROR] Error al descifrar: {e.response['Error']['Message']}")
+            return None
+        except Exception as e:
+            print(f"[AWS KMS ERROR] Error inesperado al descifrar: {e}")
+            return None
+
+kms_manager = KMSManager()
 keycloak_manager = KeycloakManager()
