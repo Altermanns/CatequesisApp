@@ -60,3 +60,7 @@ class GrupoRepository(BaseMongoRepository):
 
 class SacramentoRepository(BaseMongoRepository):
     collection_name = 'Sacramentos'
+
+class SyncTextilRepository(BaseMongoRepository):
+    collection_name = 'SyncTextil'
+

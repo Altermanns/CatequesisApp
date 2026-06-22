@@ -33,10 +33,14 @@ def receive_textil_data(request):
         # 3. Log or process the payload
         print(f"[SECURITY INFO] Decrypted payload successfully: {payload}")
         
+        # Guardar en base de datos MongoDB
+        from ..services.repositories import SyncTextilRepository
+        SyncTextilRepository().insert(payload)
+        
         # We can store the sync status or respond with a successful signature
         return JsonResponse({
             "status": "success",
-            "message": "Data decrypted and processed successfully",
+            "message": "Data decrypted, saved and processed successfully",
             "received_keys": list(payload.keys())
         })
         

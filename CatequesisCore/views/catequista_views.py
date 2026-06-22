@@ -52,3 +52,11 @@ def buscar_catequista(request):
     termino = request.GET.get('termino', '')
     resultados = service.buscar_por_nombre(termino)
     return render(request, 'catequistas.html', {'catequistas': resultados})
+
+@catequista_required
+def listar_datos_recibidos(request):
+    from ..services.repositories import SyncTextilRepository
+    repo = SyncTextilRepository()
+    datos = repo.get_all()
+    return render(request, 'datos_recibidos.html', {'datos': datos})
+

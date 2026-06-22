@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block titulo %}Datos Recibidos (KMS){% endblock %}
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Datos Sincronizados de TextilApp</h2>
+    <span class="badge bg-success p-2 fs-6">
+        <i class="bi bi-shield-lock-fill"></i> Desencriptado con AWS KMS
+    </span>
+</div>
+
+<p class="text-muted">
+    Este panel muestra la información de la materia prima que ha sido transferida de forma segura desde el sistema <strong>TextilApp</strong>, cifrada de extremo a extremo usando AWS KMS y transmitida con autorización mediante Keycloak.
+</p>
+
+{% if datos %}
+<div class="table-responsive">
+    <table class="table table-striped table-bordered align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID Materia</th>
+                <th>Tipo de Materia</th>
+                <th>Cantidad</th>
+                <th>Lote</th>
+                <th>Fecha Ingreso</th>
+                <th>Usuario Registro</th>
+                <th>Origen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in datos %}
+                <tr>
+                    <td><strong>{{ item.id }}</strong></td>
+                    <td>{{ item.tipo }}</td>
+                    <td>{{ item.cantidad }} {{ item.unidad_medida }}</td>
+                    <td><span class="badge bg-secondary">{{ item.lote }}</span></td>
+                    <td>{{ item.fecha_ingreso|default:"-" }}</td>
+                    <td><code>{{ item.usuario_registro|default:"-" }}</code></td>
+                    <td><span class="badge bg-info text-dark">{{ item.origen|default:"TextilApp" }}</span></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-warning text-center p-4 mt-4" role="alert">
+    <h4 class="alert-heading">No hay datos sincronizados aún</h4>
+    <p class="mb-0">Cuando TextilApp envíe información cifrada, se descifrará con AWS KMS y aparecerá en este listado automáticamente.</p>
+</div>
+{% endif %}
+
+{% endblock %}
