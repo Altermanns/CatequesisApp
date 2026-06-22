@@ -77,7 +77,7 @@
                 <td>{{ e.nombre }}</td>
                 <td>{{ e.apellido }}</td>
                 <td>{{ e.edad }}</td>
-                <td>{{ e.grupo_id or 'Sin grupo' }}</td>
+                <td>{{ e.grupo_id|default:'Sin grupo' }}</td>
                 <td>
                     {% for s in e.sacramentos %}
                         <span class="badge text-bg-secondary">{{ s }}</span>
