@@ -12,7 +12,7 @@ class SilentSSOMiddleware:
         if request.user.is_authenticated:
             return self.get_response(request)
 
-        # 2. Evitar bucles de redirección en rutas de auth
+        # 2. Evitar bucles de redirección en rutas de auth y apis
         path = request.path
         exempt_paths = [
             reverse('login'),
@@ -20,6 +20,7 @@ class SilentSSOMiddleware:
             reverse('logout'),
             '/admin/',
             '/static/',
+            '/api/',
         ]
         
         if any(path.startswith(p) for p in exempt_paths):
